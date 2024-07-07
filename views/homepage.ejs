@@ -159,6 +159,24 @@
     <p>&copy; 2023 Fake Adoption Center. All rights reserved.</p>
   </footer>
 
+  <div class="form-overlay">
+    <div class="form-overlay__inner">
+      <form action="" class="form-overlay__content">
+        <button class="close-btn">x</button>
+        <input type="text" name="name" id="name" class="form-field" autocomplete="off" placeholder="Name">
+        <input type="email" name="email" id="email" class="form-field" placeholder="Email Address">
+        <input type="text" name="spam" id="secret" class="form-field" placeholder="What is the word for a baby dog?">
+        <textarea name="comment" id="comment" class="form-field" placeholder="Comment (optional)"></textarea>
+        <button class="our-btn">Submit</button>
+      </form>
+      <div class="form-overlay__photo">
+        <img src="/images/fallback.jpg" alt="fallback image" />
+        <p>Thank you for your interest in <span>Barksalot.</span></p>
+      </div>
+      <div class="form-overlay__message"></div>
+    </div>
+  </div>
+
   <script src="js/main.js"></script>
 </body>
 
