@@ -1,6 +1,7 @@
 const petsCollection = require("../db").db().collection("pets");
 const sanitizeHtml = require("sanitize-html");
 const { ObjectId } = require("mongodb");
+const nodemailer = require("nodemailer");
 
 const sanitizeOptions = {
   allowedTags: [],
@@ -34,5 +35,36 @@ exports.submitContact = async function (req, res) {
   };
 
   console.log(ourFormData);
+
+  var transport = nodemailer.createTransport({
+    host: "sandbox.smtp.mailtrap.io",
+    port: 2525,
+    auth: {
+      user: process.env.MAILTRAPUSERNAME,
+      pass: process.env.MAILTRAPPASSWORD
+    }
+  });
+
+  transport.sendMail({
+    from: ourFormData.email,
+    to: "petadoptioncenter@me.com",
+    subject: `Thank you to your interesting in ${doesPetExist.name}.`,
+    html: `<h3 style="color: purple; font-size: 30px; font-weight: normal;">Thank you ${ourFormData.name},</h3>
+      <p style="font-size: 20px;">We appreciate your interest in ${doesPetExist.name} and one of our
+      staff will reach out to you shortly! Below is a copy of the message you sent us for your personal records.</p>
+      <p style="font-size: 20px;"><em>${ourFormData.comment}</em></p>`
+  });
+
+  transport.sendMail({
+    from: "petadoptioncenter@me.com",
+    to: "petadoptioncenter@me.com",
+    subject: `Someone is interesting in ${doesPetExist.name}.`,
+    html: `<h3 style="color: purple; font-size: 30px; font-weight: normal;">New Contact!</h3>
+      <p style="font-size: 20px;"><em>Name: ${ourFormData.name}</br>
+      Email: ${ourFormData.email}</br>
+      Pet interested in: ${doesPetExist.name}</br>
+      Comment: ${ourFormData.comment}</em></p>`
+  });
+
   res.send("Success!");
 };
