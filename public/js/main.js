@@ -38,6 +38,20 @@ function handleButtonClick(e) {
 document.querySelector(".form-overlay").style.display = "";
 
 function openOverlay(el) {
+  const petCard = el.closest(".pet-card");
+
+  const id = petCard.dataset.id;
+  const name = petCard.querySelector(".pet-card-text h3").textContent.trim();
+  const photo = petCard.querySelector(".pet-card-photo img").src;
+  const photoAlt = petCard.querySelector(".pet-card-photo img").alt;
+
+  document.querySelector(".form-overlay__photo img").src = ``;
+
+  document.querySelector(".form-overlay__photo img").src = photo;
+  document.querySelector(".form-overlay__photo img").alt = photoAlt;
+  document.querySelector(".form-overlay__photo span").textContent = name + ".";
+  document.querySelector(".form-overlay__content").dataset.id = id;
+
   document
     .querySelector(".form-overlay")
     .classList.add("form-overlay--visible");
@@ -47,8 +61,34 @@ document
   .querySelector(".close-btn")
   .addEventListener("click", () => closeOverlay());
 
-function closeOverlay() {
+async function closeOverlay() {
   document
     .querySelector(".form-overlay")
     .classList.remove("form-overlay--visible");
+}
+
+document
+  .querySelector(".form-overlay__content")
+  .addEventListener("submit", e => sendForm(e));
+
+function sendForm(e) {
+  e.preventDefault();
+
+  const userValues = {
+    name: document.querySelector(".form-overlay__content #name").value,
+    email: document.querySelector(".form-overlay__content #email").value,
+    secret: document.querySelector(".form-overlay__content #secret").value,
+    comment: document.querySelector(".form-overlay__content #comment").value,
+    petId: document.querySelector(".form-overlay__content").dataset.id
+  };
+
+  console.log(userValues);
+
+  fetch("/submit-contact", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(userValues)
+  });
 }
