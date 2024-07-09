@@ -2,15 +2,21 @@ const petsCollection = require("../db").db().collection("pets");
 const sanitizeHtml = require("sanitize-html");
 const { ObjectId } = require("mongodb");
 const nodemailer = require("nodemailer");
+const validator = require("validator");
 
 const sanitizeOptions = {
   allowedTags: [],
   allowedAttributes: {}
 };
 
-exports.submitContact = async function (req, res) {
+exports.submitContact = async function (req, res, next) {
   if (req.body.secret.toUpperCase() !== process.env.CONTACTFORMSECRET) {
     console.log("spam detected");
+    return res.json({ message: "Sorry!!!" });
+  }
+
+  if (!validator.isEmail(req.body.email)) {
+    console.log("invalid email detected");
     return res.json({ message: "Sorry!!!" });
   }
 
@@ -45,26 +51,32 @@ exports.submitContact = async function (req, res) {
     }
   });
 
-  transport.sendMail({
-    from: ourFormData.email,
-    to: "petadoptioncenter@me.com",
-    subject: `Thank you to your interesting in ${doesPetExist.name}.`,
-    html: `<h3 style="color: purple; font-size: 30px; font-weight: normal;">Thank you ${ourFormData.name},</h3>
-      <p style="font-size: 20px;">We appreciate your interest in ${doesPetExist.name} and one of our
-      staff will reach out to you shortly! Below is a copy of the message you sent us for your personal records.</p>
-      <p style="font-size: 20px;"><em>${ourFormData.comment}</em></p>`
-  });
+  try {
+    const promise1 = transport.sendMail({
+      from: ourFormData.email,
+      to: "petadoptioncenter@me.com",
+      subject: `Thank you to your interesting in ${doesPetExist.name}.`,
+      html: `<h3 style="color: purple; font-size: 30px; font-weight: normal;">Thank you ${ourFormData.name},</h3>
+        <p style="font-size: 20px;">We appreciate your interest in ${doesPetExist.name} and one of our
+        staff will reach out to you shortly! Below is a copy of the message you sent us for your personal records.</p>
+        <p style="font-size: 20px;"><em>${ourFormData.comment}</em></p>`
+    });
 
-  transport.sendMail({
-    from: "petadoptioncenter@me.com",
-    to: "petadoptioncenter@me.com",
-    subject: `Someone is interesting in ${doesPetExist.name}.`,
-    html: `<h3 style="color: purple; font-size: 30px; font-weight: normal;">New Contact!</h3>
-      <p style="font-size: 20px;"><em>Name: ${ourFormData.name}</br>
-      Email: ${ourFormData.email}</br>
-      Pet interested in: ${doesPetExist.name}</br>
-      Comment: ${ourFormData.comment}</em></p>`
-  });
+    const promise2 = transport.sendMail({
+      from: "petadoptioncenter@me.com",
+      to: "petadoptioncenter@me.com",
+      subject: `Someone is interesting in ${doesPetExist.name}.`,
+      html: `<h3 style="color: purple; font-size: 30px; font-weight: normal;">New Contact!</h3>
+        <p style="font-size: 20px;"><em>Name: ${ourFormData.name}</br>
+        Email: ${ourFormData.email}</br>
+        Pet interested in: ${doesPetExist.name}</br>
+        Comment: ${ourFormData.comment}</em></p>`
+    });
+
+    await Promise.all([promise1, promise2]);
+  } catch (err) {
+    next(err);
+  }
 
   res.send("Success!");
 };
