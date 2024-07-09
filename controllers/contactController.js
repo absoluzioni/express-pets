@@ -1,4 +1,5 @@
 const petsCollection = require("../db").db().collection("pets");
+const contactsCollection = require("../db").db().collection("contacts");
 const sanitizeHtml = require("sanitize-html");
 const { ObjectId } = require("mongodb");
 const nodemailer = require("nodemailer");
@@ -13,6 +14,17 @@ exports.submitContact = async function (req, res, next) {
   if (req.body.secret.toUpperCase() !== process.env.CONTACTFORMSECRET) {
     console.log("spam detected");
     return res.json({ message: "Sorry!!!" });
+  }
+
+  // check if any fields aren't a string for avoid injections of objects in our MongoDB collection
+  if (typeof req.body.name != "string") {
+    req.body.name = "";
+  }
+  if (typeof req.body.email != "string") {
+    req.body.email = "";
+  }
+  if (typeof req.body.comment != "string") {
+    req.body.comment = "";
   }
 
   if (!validator.isEmail(req.body.email)) {
@@ -34,13 +46,18 @@ exports.submitContact = async function (req, res, next) {
     return res.json({ message: "Invalid ID" });
   }
 
-  let ourFormData = {
+  let ourEmailData = {
     name: sanitizeHtml(req.body.name, sanitizeOptions),
     email: sanitizeHtml(req.body.email, sanitizeOptions),
     comment: sanitizeHtml(req.body.comment, sanitizeOptions)
   };
 
-  console.log(ourFormData);
+  let ourDBData = {
+    name: ourEmailData.name,
+    email: ourEmailData.email,
+    comment: ourEmailData.comment,
+    petId: doesPetExist._id
+  };
 
   var transport = nodemailer.createTransport({
     host: "sandbox.smtp.mailtrap.io",
@@ -53,13 +70,13 @@ exports.submitContact = async function (req, res, next) {
 
   try {
     const promise1 = transport.sendMail({
-      from: ourFormData.email,
+      from: ourEmailData.email,
       to: "petadoptioncenter@me.com",
       subject: `Thank you to your interesting in ${doesPetExist.name}.`,
-      html: `<h3 style="color: purple; font-size: 30px; font-weight: normal;">Thank you ${ourFormData.name},</h3>
+      html: `<h3 style="color: purple; font-size: 30px; font-weight: normal;">Thank you ${ourEmailData.name},</h3>
         <p style="font-size: 20px;">We appreciate your interest in ${doesPetExist.name} and one of our
         staff will reach out to you shortly! Below is a copy of the message you sent us for your personal records.</p>
-        <p style="font-size: 20px;"><em>${ourFormData.comment}</em></p>`
+        <p style="font-size: 20px;"><em>${ourEmailData.comment}</em></p>`
     });
 
     const promise2 = transport.sendMail({
@@ -67,16 +84,22 @@ exports.submitContact = async function (req, res, next) {
       to: "petadoptioncenter@me.com",
       subject: `Someone is interesting in ${doesPetExist.name}.`,
       html: `<h3 style="color: purple; font-size: 30px; font-weight: normal;">New Contact!</h3>
-        <p style="font-size: 20px;"><em>Name: ${ourFormData.name}</br>
-        Email: ${ourFormData.email}</br>
+        <p style="font-size: 20px;"><em>Name: ${ourEmailData.name}</br>
+        Email: ${ourEmailData.email}</br>
         Pet interested in: ${doesPetExist.name}</br>
-        Comment: ${ourFormData.comment}</em></p>`
+        Comment: ${ourEmailData.comment}</em></p>`
     });
 
-    await Promise.all([promise1, promise2]);
+    const promise3 = await contactsCollection.insertOne(ourDBData);
+
+    await Promise.all([promise1, promise2, promise3]);
   } catch (err) {
     next(err);
   }
 
+  res.send("Thanks for sending data to us");
+};
+
+exports.viewPetContacts = async function (req, res) {
   res.send("Success!");
 };
