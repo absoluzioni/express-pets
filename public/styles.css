@@ -604,4 +604,24 @@ textarea.form-field {
 .form-overlay .our-btn {
   display: block;
   margin-left: auto;
+}
+
+.view-contacts-page table {
+  border-collapse: collapse;
+  width: 100%;
+}
+.view-contacts-page thead tr {
+  background-color: #e39999;
+}
+.view-contacts-page tr {
+  width: 100%;
+}
+.view-contacts-page tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+.view-contacts-page th,
+.view-contacts-page td {
+  text-align: left;
+  padding: 8px;
+  border: 1px solid #ccc;
 }/*# sourceMappingURL=styles.css.map */

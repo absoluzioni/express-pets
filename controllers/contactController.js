@@ -101,5 +101,21 @@ exports.submitContact = async function (req, res, next) {
 };
 
 exports.viewPetContacts = async function (req, res) {
-  res.send("Success!");
+  if (!ObjectId.isValid(req.params.id)) {
+    console.log("Invalid ID");
+    return res.redirect("/");
+  }
+
+  const pet = await petsCollection.findOne({
+    _id: ObjectId.createFromHexString(req.params.id)
+  });
+
+  if (!pet) {
+    console.log("The pet doesn't exist");
+    return res.redirect("/");
+  }
+
+  const contacts = await contactsCollection.find({ petId: pet._id }).toArray();
+
+  res.render("view-contacts", { contacts, pet });
 };
