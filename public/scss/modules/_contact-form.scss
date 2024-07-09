@@ -1,7 +1,4 @@
 .form-overlay {
-  display: flex;
-  justify-content: center;
-  align-items: center;
   position: fixed;
   top: 0;
   left: 0;
@@ -10,13 +7,19 @@
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(5px);
   z-index: 100;
+  overflow-y: visible;
   visibility: hidden;
   opacity: 0;
   transform: scale(1.2);
   transition: all 0.5s ease-out;
 
-  &--visible {
+  @include minw(733px) {
     display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &--visible {
     visibility: visible;
     opacity: 1;
     transform: scale(1);
@@ -27,13 +30,17 @@
     flex: 1;
     align-self: center;
     position: relative;
-    width: 100%;
+    width: calc(100% - 32px);
     max-width: 880px;
     margin: 16px;
     background: #fff;
     box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.07);
     display: grid;
-    grid-template-columns: 340px 1fr;
+    grid-template-columns: 1fr;
+
+    @include minw(733px) {
+      grid-template-columns: 340px 1fr;
+    }
   }
 
   &__photo {
@@ -43,6 +50,11 @@
     flex-direction: column;
     justify-content: flex-start;
     align-items: stretch;
+    height: 330px;
+
+    @include minw(733px) {
+      height: auto;
+    }
 
     img {
       display: block;
@@ -74,8 +86,13 @@
 
   &__content {
     order: 2;
-    padding-block: 38px;
-    padding-inline: 54px;
+    padding-block: 20px;
+    padding-inline: 16px;
+
+    @include minw(733px) {
+      padding-block: 38px;
+      padding-inline: 54px;
+    }
   }
 
   &__message {
@@ -124,6 +141,7 @@
 
   .close-btn {
     position: absolute;
+    z-index: 102;
     padding: 0;
     top: 6px;
     right: 12px;

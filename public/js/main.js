@@ -68,7 +68,7 @@ function closeOverlay() {
   document
     .querySelector(".form-overlay")
     .classList.remove("form-overlay--visible");
-  document.querySelector(":root").style.overflowY = "hidden";
+  document.querySelector(":root").style.overflowY = "";
 }
 
 // function to send contact-form colled when submit event is triggered

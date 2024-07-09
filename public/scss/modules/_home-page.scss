@@ -13,4 +13,14 @@
       opacity: 1;
     }
   }
+
+  .intro-buttons {
+    .our-btn:first-of-type {
+      margin-bottom: 15px;
+
+      @include minw(324px) {
+        margin-bottom: 0;
+      }
+    }
+  }
 }
