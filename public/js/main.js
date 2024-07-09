@@ -35,6 +35,7 @@ function handleButtonClick(e) {
   });
 }
 
+// function to open form-overlay called from pet card's mail icon
 document.querySelector(".form-overlay").style.display = "";
 
 function openOverlay(el) {
@@ -57,38 +58,59 @@ function openOverlay(el) {
     .classList.add("form-overlay--visible");
 }
 
+// function to close form-overlay
 document
   .querySelector(".close-btn")
   .addEventListener("click", () => closeOverlay());
 
-async function closeOverlay() {
+function closeOverlay() {
   document
     .querySelector(".form-overlay")
     .classList.remove("form-overlay--visible");
 }
 
+// function to send contact-form colled when submit event is triggered
 document
   .querySelector(".form-overlay__content")
   .addEventListener("submit", e => sendForm(e));
 
-function sendForm(e) {
+async function sendForm(e) {
   e.preventDefault();
 
+  const theName = document.querySelector(".form-overlay__content #name");
+  const theEmail = document.querySelector(".form-overlay__content #email");
+  const theSecret = document.querySelector(".form-overlay__content #secret");
+  const theComment = document.querySelector(".form-overlay__content #comment");
+
   const userValues = {
-    name: document.querySelector(".form-overlay__content #name").value,
-    email: document.querySelector(".form-overlay__content #email").value,
-    secret: document.querySelector(".form-overlay__content #secret").value,
-    comment: document.querySelector(".form-overlay__content #comment").value,
+    name: theName.value,
+    email: theEmail.value,
+    secret: theSecret.value,
+    comment: theComment.value,
     petId: document.querySelector(".form-overlay__content").dataset.id
   };
 
   console.log(userValues);
 
-  fetch("/submit-contact", {
+  const sendMail = await fetch("/submit-contact", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
     },
     body: JSON.stringify(userValues)
   });
+
+  if (sendMail.ok) {
+    const formOverlayMessage = document.querySelector(".form-overlay__message");
+    formOverlayMessage.classList.add("form-overlay__message--visible");
+
+    setTimeout(closeOverlay, 2500);
+    setTimeout(() => {
+      formOverlayMessage.classList.remove("form-overlay__message--visible");
+      theName.value = "";
+      theEmail.value = "";
+      theSecret.value = "";
+      theComment.value = "";
+    }, 2900);
+  }
 }

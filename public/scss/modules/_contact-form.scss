@@ -79,7 +79,40 @@
   }
 
   &__message {
-    display: none;
+    position: absolute;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff;
+    padding: 16px;
+    z-index: 10;
+    visibility: hidden;
+    opacity: 0;
+    transition: all 0.3s ease-out;
+
+    &--visible {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    p {
+      font-size: 1.4rem;
+      margin-block: 0;
+      width: 100%;
+      text-align: center;
+      z-index: 10;
+
+      svg {
+        display: inline-block;
+        margin-right: 4px;
+        height: 1.5rem;
+        width: 1.5rem;
+        position: relative;
+        top: 4px;
+        color: rgb(12, 189, 12);
+      }
+    }
   }
 
   input,
