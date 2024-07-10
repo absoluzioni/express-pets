@@ -1,0 +1,34 @@
+.view-contacts-page {
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  thead {
+    tr {
+      background-color: #e39999;
+    }
+  }
+
+  tr {
+    width: 100%;
+
+    &:nth-child(even) {
+      background-color: #f1f1f1;
+    }
+  }
+
+  th,
+  td {
+    text-align: left;
+    padding: 10px;
+    font-size: 0.87rem;
+  }
+
+  td {
+    font-size: 1rem;
+  }
+
+
+}

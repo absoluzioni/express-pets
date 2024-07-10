@@ -1,0 +1,26 @@
+.home-page {
+
+  .pet-contact-btn {
+    position: relative;
+    top: 5px;
+    left: 12px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    opacity: 0.7;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  .intro-buttons {
+    .our-btn:first-of-type {
+      margin-bottom: 15px;
+
+      @include minw(324px) {
+        margin-bottom: 0;
+      }
+    }
+  }
+}

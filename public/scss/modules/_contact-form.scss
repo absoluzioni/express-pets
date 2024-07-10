@@ -1,0 +1,168 @@
+.form-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(5px);
+  z-index: 100;
+  overflow-y: visible;
+  visibility: hidden;
+  opacity: 0;
+  transform: scale(1.2);
+  transition: all 0.5s ease-out;
+
+  @include minw(733px) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &--visible {
+    visibility: visible;
+    opacity: 1;
+    transform: scale(1);
+  }
+
+
+  &__inner {
+    flex: 1;
+    align-self: center;
+    position: relative;
+    width: calc(100% - 32px);
+    max-width: 880px;
+    margin: 16px;
+    background: #fff;
+    box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.07);
+    display: grid;
+    grid-template-columns: 1fr;
+
+    @include minw(733px) {
+      grid-template-columns: 340px 1fr;
+    }
+  }
+
+  &__photo {
+    position: relative;
+    order: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    height: 330px;
+
+    @include minw(733px) {
+      height: auto;
+    }
+
+    img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    p {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      font-size: 0.9375rem;
+      margin-block: 0;
+      padding: 16px 25px;
+      color: #555;
+      background-color: rgba(255, 255, 255, 0.63);
+      backdrop-filter: blur(2px);
+
+      span {
+        display: block;
+        font-size: 2.25rem;
+        line-height: 1;
+        color: #000;
+      }
+    }
+  }
+
+  &__content {
+    order: 2;
+    padding-block: 20px;
+    padding-inline: 16px;
+
+    @include minw(733px) {
+      padding-block: 38px;
+      padding-inline: 54px;
+    }
+  }
+
+  &__message {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff;
+    padding: 16px;
+    z-index: 10;
+    visibility: hidden;
+    opacity: 0;
+    transition: all 0.3s ease-out;
+
+    &--visible {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    p {
+      font-size: 1.4rem;
+      margin-block: 0;
+      width: 100%;
+      text-align: center;
+      z-index: 10;
+
+      svg {
+        display: inline-block;
+        margin-right: 4px;
+        height: 1.5rem;
+        width: 1.5rem;
+        position: relative;
+        top: 4px;
+        color: rgb(12, 189, 12);
+      }
+    }
+  }
+
+  input,
+  textarea {
+    width: 100%;
+    border: 1px solid #888;
+    color: #888;
+  }
+
+  .close-btn {
+    position: absolute;
+    z-index: 102;
+    padding: 0;
+    top: 6px;
+    right: 12px;
+    background: none;
+    border: none;
+    font-size: 2.25rem;
+    font-weight: 400;
+    transform: scaleX(1.2);
+    color: rgba(0, 0, 0, 0.41);
+    line-height: 0.75;
+    opacity: 0.7;
+    cursor: pointer;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  .our-btn {
+    display: block;
+    margin-left: auto;
+  }
+
+}
