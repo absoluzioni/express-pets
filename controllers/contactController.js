@@ -100,6 +100,7 @@ exports.submitContact = async function (req, res, next) {
   res.send("Thanks for sending data to us");
 };
 
+// Send the data of the selected pet and all its contacts
 exports.viewPetContacts = async function (req, res) {
   if (!ObjectId.isValid(req.params.id)) {
     console.log("Invalid ID");
@@ -117,5 +118,5 @@ exports.viewPetContacts = async function (req, res) {
 
   const contacts = await contactsCollection.find({ petId: pet._id }).toArray();
 
-  res.render("view-contacts", { contacts, pet });
+  res.render("pet-contacts", { contacts, pet });
 };
